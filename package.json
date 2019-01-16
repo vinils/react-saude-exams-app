@@ -1,0 +1,40 @@
+{
+  "name": "react-saude-exams-app",
+  "version": "0.0.1-rc.1",
+  "description": "Saude exams",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/vinils/react-saude-exams-app.git"
+  },
+  "bugs": {
+    "url": "https://github.com/vinils/react-saude-exams-app/issues/"
+  },
+  "homepage": "https://vinils.github.io/react-saude-exams-app/",
+  "author": {
+    "name": "vinils",
+    "email": "vini_ls@hotmail.com"
+  },
+  "keywords": [
+    "react",
+    "table",
+    "react-table",
+    "datagrid"
+  ],
+  "dependencies": {
+    "@vinils/react-table": "0.0.1-rc.1",
+    "react": "^16.5.1",
+    "react-dom": "^16.5.1",
+    "react-scripts": "1.1.5"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test --env=jsdom",
+    "eject": "react-scripts eject",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build"
+  },
+  "devDependencies": {
+    "gh-pages": "^2.0.0"
+  }
+}
