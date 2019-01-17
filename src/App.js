@@ -138,7 +138,7 @@ export default class App extends Component {
         ret.cast2 = (callBackFn) => groupedDictionaryCast(ret, callBackFn);
       }
       if(!ret.keys) {
-        ret.keys = () => Object.keys(ret).filter(e => e !== 'forEach' && e !== 'cast' && e !== 'keys')
+        ret.keys = () => Object.keys(ret).filter(k => Array.isArray(ret[k]))
       }
       return ret;
     }
