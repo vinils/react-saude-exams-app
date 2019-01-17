@@ -11,7 +11,6 @@ export default class App extends Component {
         keys: null
     }
 
-
     this.loadPrototypes();
 
     let castTree = (treeNode, childName, callBackFn) => {
