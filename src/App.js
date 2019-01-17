@@ -52,7 +52,7 @@ export default class App extends Component {
           keys = keys.concat(groupedExamsByDate.keys())
 
           let groupedExamsByDateCasted = groupedExamsByDate
-            .cast((eg, key) => ({[key]: this.valueCol(eg[0])}))
+            .cast2((eg, key) => ({[key]: this.valueCol(eg[0])}))
 
           ret = {
             ...ret, 
@@ -72,7 +72,6 @@ export default class App extends Component {
       })
 
       this.setState({data: exams, keys: keys.Distinct()})
-
     })
   }
 
@@ -135,8 +134,8 @@ export default class App extends Component {
       if(!ret.forEach) {
         ret.forEach = (callBackFn) => groupedDictionaryForEach(ret, callBackFn);
       }
-      if(!ret.cast) {
-        ret.cast = (callBackFn) => groupedDictionaryCast(ret, callBackFn);
+      if(!ret.cast2) {
+        ret.cast2 = (callBackFn) => groupedDictionaryCast(ret, callBackFn);
       }
       if(!ret.keys) {
         ret.keys = () => Object.keys(ret).filter(e => e !== 'forEach' && e !== 'cast' && e !== 'keys')
