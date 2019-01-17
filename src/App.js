@@ -28,8 +28,8 @@ export default class App extends Component {
     const odataUrl = 'http://192.168.15.250/data/odata/v4'
     const oataGroupsUrl = odataUrl + '/groups'
     const examsId = '98B34F14-6DAA-3EE4-4EB1-E6D4F691960E'
-    const sonoSumaryUrl = oataGroupsUrl + `?$filter=Id eq ${examsId}&$expand=Childs($levels=max;$expand=Exams($expand=Data.Models.ExamDecimal/LimitDenormalized,Data.Models.ExamString/LimitDenormalized))`
-    fetch(sonoSumaryUrl)
+    const examsUrl = oataGroupsUrl + `?$filter=Id eq ${examsId}&$expand=Childs($levels=max;$expand=Exams($expand=Data.Models.ExamDecimal/LimitDenormalized,Data.Models.ExamString/LimitDenormalized))`
+    fetch(examsUrl)
     .then(res => res.json())
     .then(json => {
       let groupExams = json.value[0];
