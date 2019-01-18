@@ -75,7 +75,7 @@ export default class App extends Component {
   }
 
   loadPrototypes() {
-    let groupedDictionaryForEach = (dictionary, callBackFn) => {
+    const groupedDictionaryForEach = (dictionary, callBackFn) => {
       Object.keys(dictionary).forEach((key, index) => {
         let elements = dictionary[key]; 
         if(!Array.isArray(elements)) {
@@ -86,7 +86,7 @@ export default class App extends Component {
       })
     }
 
-    let groupedDictionaryCast = (dictionary, callBackFn) => {
+    const groupedDictionaryCast = (dictionary, callBackFn) => {
       let ret = {}
 
       dictionary.forEach((elements, key) => 
@@ -96,10 +96,10 @@ export default class App extends Component {
       return ret;
     }
 
-    Date.prototype.formatToYYYY_MM_DD = function() {
-      let month = '' + (this.getMonth() + 1),
-      day = '' + this.getDate(),
-      year = this.getFullYear();
+    const dateFormatToYYYY_MM_DD = (date) => {
+      let month = '' + (date.getMonth() + 1),
+      day = '' + date.getDate(),
+      year = date.getFullYear();
 
       if (month.length < 2) month = '0' + month;
       if (day.length < 2) day = '0' + day;
@@ -107,10 +107,14 @@ export default class App extends Component {
       return [year, month, day].join('-');
     }
 
-    Date.prototype.formatToDD_MM_YY = function() {
-      let month = '' + (this.getMonth() + 1),
-      day = '' + this.getDate(),
-      year = this.getFullYear();
+    Date.prototype.formatToYYYY_MM_DD = function () {
+      return dateFormatToYYYY_MM_DD(this);
+    }
+
+    const dateFormatToDD_MM_YY = (date) => {
+      let month = '' + (date.getMonth() + 1),
+      day = '' + date.getDate(),
+      year = date.getFullYear();
 
       if (month.length < 2) month = '0' + month;
       if (day.length < 2) day = '0' + day;
@@ -118,9 +122,13 @@ export default class App extends Component {
       return [day, month, year-2000].join('/');
     }
 
-    Array.prototype.GroupBy = function(callBackFn) {
+    Date.prototype.formatToDD_MM_YY = function() {
+      return dateFormatToDD_MM_YY(this)
+    }
+
+    const arrayGroupBy = (array, callBackFn) => {
       let ret = {}
-      this.forEach(element => {
+      array.forEach(element => {
         let key = callBackFn(element)
         if(!ret[key]) {
 
@@ -142,8 +150,16 @@ export default class App extends Component {
       return ret;
     }
 
+    Array.prototype.GroupBy = function(callBackFn) {
+      return arrayGroupBy(this, callBackFn)
+    }
+
+    const arrayDistinct = (array) => {
+      return array.filter((value, index, self) => self.indexOf(value) === index)
+    }
+
     Array.prototype.Distinct = function() {
-      return this.filter((value, index, self) => self.indexOf(value) === index)
+      return arrayDistinct(this)
     }
   }
 
