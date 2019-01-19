@@ -11,7 +11,21 @@ export default class App extends Component {
         keys: null
     }
 
-    this.loadPrototypes();
+    // Date.prototype.formatToYYYY_MM_DD = function () {
+    //   return this.dateFormatToYYYY_MM_DD(this);
+    // }
+
+    // Date.prototype.formatToDD_MM_YY = function() {
+    //   return this.dateFormatToDD_MM_YY(this)
+    // }
+
+    // Array.prototype.GroupBy = function(callBackFn) {
+    //   return this.arrayGroupBy(this, callBackFn)
+    // }
+
+    // Array.prototype.Distinct = function() {
+    //   return this.arrayDistinct(this)
+    // }
 
     let castTree = (treeNode, childName, callBackFn) => {
       if(!treeNode) {
@@ -45,13 +59,12 @@ export default class App extends Component {
         }
 
         if(group.Exams) {
-          let groupedExamsByDate = group.Exams
-            .GroupBy(e => new Date(e.CollectionDate).formatToYYYY_MM_DD() + "T00:00:00");
+          let groupedExamsByDate = this.arrayGroupBy(group.Exams, e => this.dateFormatToYYYY_MM_DD(new Date(e.CollectionDate)) + "T00:00:00");
 
           keys = keys.concat(groupedExamsByDate.keys())
 
           let groupedExamsByDateCasted = groupedExamsByDate
-            .cast2((eg, key) => ({[key]: this.valueCol(eg[0])}))
+            .cast((eg, key) => ({[key]: this.valueCol(eg[0])}))
 
           ret = {
             ...ret, 
@@ -70,97 +83,79 @@ export default class App extends Component {
         return ret;
       })
 
-      this.setState({data: exams, keys: keys.Distinct()})
+      this.setState({data: exams, keys: this.arrayDistinct(keys)})
     })
   }
 
-  loadPrototypes() {
-    const groupedDictionaryForEach = (dictionary, callBackFn) => {
-      Object.keys(dictionary).forEach((key, index) => {
-        let elements = dictionary[key]; 
-        if(!Array.isArray(elements)) {
-          return;
-        } else {
-          callBackFn(elements, key)
-        }
-      })
+  groupedDictionaryForEach = (dictionary, callBackFn) => {
+    Object.keys(dictionary).forEach((key, index) => {
+      let elements = dictionary[key]; 
+      if(!Array.isArray(elements)) {
+        return;
+      } else {
+        callBackFn(elements, key)
+      }
+    })
+  }
+
+  groupedDictionaryCast = (dictionary, callBackFn) => {
+    let ret = {}
+
+    dictionary.forEach((elements, key) => 
+      ret = {...ret, ...callBackFn(elements, key)}
+    );
+
+    return ret;
+  }
+
+  dateFormatToYYYY_MM_DD = (date) => {
+    let month = '' + (date.getMonth() + 1),
+    day = '' + date.getDate(),
+    year = date.getFullYear();
+
+    if (month.length < 2) month = '0' + month;
+    if (day.length < 2) day = '0' + day;
+
+    return [year, month, day].join('-');
+  }
+
+  dateFormatToDD_MM_YY = (date) => {
+    let month = '' + (date.getMonth() + 1),
+    day = '' + date.getDate(),
+    year = date.getFullYear();
+
+    if (month.length < 2) month = '0' + month;
+    if (day.length < 2) day = '0' + day;
+
+    return [day, month, year-2000].join('/');
+  }
+
+  arrayGroupBy = (array, callBackFn) => {
+    let ret = {}
+    array.forEach(element => {
+      let key = callBackFn(element)
+      if(!ret[key]) {
+
+        ret[key] = []
+      }
+
+      ret[key].push(element)
+    })
+
+    if(!ret.forEach) {
+      ret.forEach = (callBackFn) => this.groupedDictionaryForEach(ret, callBackFn);
     }
-
-    const groupedDictionaryCast = (dictionary, callBackFn) => {
-      let ret = {}
-
-      dictionary.forEach((elements, key) => 
-        ret = {...ret, ...callBackFn(elements, key)}
-      );
-
-      return ret;
+    if(!ret.cast) {
+      ret.cast = (callBackFn) => this.groupedDictionaryCast(ret, callBackFn);
     }
-
-    const dateFormatToYYYY_MM_DD = (date) => {
-      let month = '' + (date.getMonth() + 1),
-      day = '' + date.getDate(),
-      year = date.getFullYear();
-
-      if (month.length < 2) month = '0' + month;
-      if (day.length < 2) day = '0' + day;
+    if(!ret.keys) {
+      ret.keys = () => Object.keys(ret).filter(k => Array.isArray(ret[k]))
+    }
+    return ret;
+  }
   
-      return [year, month, day].join('-');
-    }
-
-    Date.prototype.formatToYYYY_MM_DD = function () {
-      return dateFormatToYYYY_MM_DD(this);
-    }
-
-    const dateFormatToDD_MM_YY = (date) => {
-      let month = '' + (date.getMonth() + 1),
-      day = '' + date.getDate(),
-      year = date.getFullYear();
-
-      if (month.length < 2) month = '0' + month;
-      if (day.length < 2) day = '0' + day;
-  
-      return [day, month, year-2000].join('/');
-    }
-
-    Date.prototype.formatToDD_MM_YY = function() {
-      return dateFormatToDD_MM_YY(this)
-    }
-
-    const arrayGroupBy = (array, callBackFn) => {
-      let ret = {}
-      array.forEach(element => {
-        let key = callBackFn(element)
-        if(!ret[key]) {
-
-          ret[key] = []
-        }
-
-        ret[key].push(element)
-      })
-
-      if(!ret.forEach) {
-        ret.forEach = (callBackFn) => groupedDictionaryForEach(ret, callBackFn);
-      }
-      if(!ret.cast2) {
-        ret.cast2 = (callBackFn) => groupedDictionaryCast(ret, callBackFn);
-      }
-      if(!ret.keys) {
-        ret.keys = () => Object.keys(ret).filter(k => Array.isArray(ret[k]))
-      }
-      return ret;
-    }
-
-    Array.prototype.GroupBy = function(callBackFn) {
-      return arrayGroupBy(this, callBackFn)
-    }
-
-    const arrayDistinct = (array) => {
-      return array.filter((value, index, self) => self.indexOf(value) === index)
-    }
-
-    Array.prototype.Distinct = function() {
-      return arrayDistinct(this)
-    }
+  arrayDistinct = (array) => {
+    return array.filter((value, index, self) => self.indexOf(value) === index)
   }
 
   getLimitDescription(exam) {
@@ -233,7 +228,7 @@ export default class App extends Component {
     const searchHead = (<div>Nome<br/><input size={10} onChange={(e) => this.handleFilterChange(e.target.value)}/></div>)
     let dates = this.state.keys
     let datesSorted = dates.sort((str1, str2) => new Date(str2) - new Date(str1))
-    let mappedDates = datesSorted.map((date) => {return {description: <center><b>{new Date(date).formatToDD_MM_YY()}</b></center>, name: date}})
+    let mappedDates = datesSorted.map((date) => {return {description: <center><b>{this.dateFormatToDD_MM_YY(new Date(date))}</b></center>, name: date}})
     return [
         {description: <b>{searchHead}</b>, name: 'Name'},
         ...mappedDates,
