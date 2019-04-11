@@ -41,7 +41,7 @@ export default class App extends Component {
     const odataUrl = 'http://mypc01.ddns.net/data/odata/v4'
     const oataGroupsUrl = odataUrl + '/groups'
     const examsId = '98B34F14-6DAA-3EE4-4EB1-E6D4F691960E'
-    const examsUrl = oataGroupsUrl + `?$filter=Id eq ${examsId}&$expand=Childs($levels=max;$expand=Exams($expand=Data.Models.ExamDecimal/LimitDenormalized,Data.Models.ExamString/LimitDenormalized))`
+    const examsUrl = oataGroupsUrl + `?$filter=Id eq ${examsId}&$expand=Childs($levels=max;$expand=Datas($expand=Data.Models.DataDecimal/LimitDenormalized,Data.Models.DataString/LimitDenormalized))`
     fetch(examsUrl)
     .then(res => res.json())
     .then(json => {
@@ -58,8 +58,8 @@ export default class App extends Component {
           ParentId: group.ParentId
         }
 
-        if(group.Exams) {
-          let groupedExamsByDate = this.arrayGroupBy(group.Exams, e => this.dateFormatToYYYY_MM_DD(new Date(e.CollectionDate)) + "T00:00:00");
+        if(group.Datas) {
+          let groupedExamsByDate = this.arrayGroupBy(group.Datas, e => this.dateFormatToYYYY_MM_DD(new Date(e.CollectionDate)) + "T00:00:00");
 
           keys = keys.concat(groupedExamsByDate.keys())
 
@@ -71,7 +71,7 @@ export default class App extends Component {
             ...groupedExamsByDateCasted
           }
 
-          let limits = group.Exams
+          let limits = group.Datas
           .map(e=> this.getLimitDescription(e))
           .filter(l => l != null || l !== '');
 
@@ -162,7 +162,7 @@ export default class App extends Component {
     let limitDescription = '';
 
     switch(exam["@odata.type"]) {
-      case "#Data.Models.ExamDecimal":
+      case "#Data.Models.DataDecimal":
         let limitDecimal = exam.LimitDenormalized;
         if(limitDecimal) {
           if(limitDecimal.Name) {
@@ -186,7 +186,7 @@ export default class App extends Component {
           }
         }
         break;
-      case "#Data.Models.ExamString":
+      case "#Data.Models.DataString":
         let limitString = exam.LimitDenormalized;
         limitDescription = limitString ? limitString.Expected : null
         break;
@@ -201,11 +201,11 @@ export default class App extends Component {
     let color = null;
 
     switch(exam["@odata.type"]){
-      case "#Data.Models.ExamDecimal":
+      case "#Data.Models.DataDecimal":
         value = exam.DecimalValue;
         color = exam.LimitDenormalized ? exam.LimitDenormalized.Color : null;
         break;
-      case "#Data.Models.ExamString":
+      case "#Data.Models.DataString":
         value = exam.StringValue;
         color = exam.LimitDenormalized ? exam.LimitDenormalized.Color : null;
         break;
