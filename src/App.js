@@ -38,7 +38,7 @@ export default class App extends Component {
       }
     }
 
-    const odataUrl = 'http://mypc01.ddns.net/data/odata/v4'
+    const odataUrl = window.location.protocol + '//' + process.env.REACT_APP_DATA_POINT
     const oataGroupsUrl = odataUrl + '/groups'
     const examsId = '98B34F14-6DAA-3EE4-4EB1-E6D4F691960E'
     const examsUrl = oataGroupsUrl + `?$filter=Id eq ${examsId}&$expand=Childs($levels=max;$expand=Datas($expand=Data.Models.DataDecimal/LimitDenormalized,Data.Models.DataString/LimitDenormalized))`
