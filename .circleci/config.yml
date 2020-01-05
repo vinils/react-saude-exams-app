@@ -12,9 +12,6 @@ jobs:
       - run:
           name: "Git configs"
           command: git config --global user.email circleci@circleci
-
-      - run:
-          name: "Git configs2"
           command: git config --global user.name CircleCI
 
       # Download and cache dependencies
