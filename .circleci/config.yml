@@ -10,9 +10,12 @@ jobs:
       - checkout
 
       - run:
-          command:
-            - git config --global user.email circleci@circleci
-            - git config --global user.name CircleCI
+          name: "Git configs"
+          command: git config --global user.email circleci@circleci
+
+      - run:
+          name: "Git configs2"
+          command: git config --global user.name CircleCI
 
       # Download and cache dependencies
       - restore_cache:
