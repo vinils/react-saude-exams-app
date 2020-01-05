@@ -10,7 +10,6 @@ jobs:
       - checkout
 
       - run:
-          name: "Git configs"
           command:
             - git config --global user.email circleci@circleci
             - git config --global user.name CircleCI
