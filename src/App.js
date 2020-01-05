@@ -46,9 +46,6 @@ export default class App extends Component {
     fetch(examsUrl)
     .then(res => res.json())
     .then(json => {
-      console.log(json)
-      console.log(JSON.parse(json.value))
-      console.log(JSON.parse(json.value)[0])
       let groupExams = JSON.parse(json.value)[0];
       groupExams.cast = (callBackFn) => castTree(groupExams, 'Childs', callBackFn);
 
