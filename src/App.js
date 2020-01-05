@@ -41,11 +41,15 @@ export default class App extends Component {
     const odataUrl = window.location.protocol + '//' + process.env.REACT_APP_DATA_POINT
     const oataGroupsUrl = odataUrl + '/groups'
     const examsId = '98B34F14-6DAA-3EE4-4EB1-E6D4F691960E'
-    const examsUrl = oataGroupsUrl + `?$filter=Id eq ${examsId}&$expand=Childs($levels=max;$expand=Datas($expand=Data.Models.DataDecimal/LimitDenormalized,Data.Models.DataString/LimitDenormalized))`
+    // const examsUrl = oataGroupsUrl + `?$filter=Id eq ${examsId}&$expand=Childs($levels=max;$expand=Datas($expand=Data.Models.DataDecimal/LimitDenormalized,Data.Models.DataString/LimitDenormalized))`
+    const examsUrl = oataGroupsUrl + `/ChildsRecursively?groupId=${examsId}`
     fetch(examsUrl)
     .then(res => res.json())
     .then(json => {
-      let groupExams = json.value[0];
+      console.log(json)
+      console.log(JSON.parse(json.value))
+      console.log(JSON.parse(json.value)[0])
+      let groupExams = JSON.parse(json.value)[0];
       groupExams.cast = (callBackFn) => castTree(groupExams, 'Childs', callBackFn);
 
       let keys = []
@@ -200,12 +204,12 @@ export default class App extends Component {
     let value = null;
     let color = null;
 
-    switch(exam["@odata.type"]){
-      case "#Data.Models.DataDecimal":
+    switch(exam["odata.type"]){
+      case "Data.Models.DataDecimal":
         value = exam.DecimalValue;
         color = exam.LimitDenormalized ? exam.LimitDenormalized.Color : null;
         break;
-      case "#Data.Models.DataString":
+      case "Data.Models.DataString":
         value = exam.StringValue;
         color = exam.LimitDenormalized ? exam.LimitDenormalized.Color : null;
         break;
