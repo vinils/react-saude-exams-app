@@ -8,6 +8,9 @@ jobs:
 
     steps:
       - checkout
+          command:
+            - git config --global user.email circleci@circleci
+            - git config --global user.name CircleCI
 
       # Download and cache dependencies
       - restore_cache:
