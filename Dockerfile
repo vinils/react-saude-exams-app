@@ -1,12 +1,12 @@
-FROM stefanscherer/node-windows:latest
+FROM node:latest
 
-WORKDIR /usr/app
+WORKDIR /app
 
 COPY ./package*.json ./
 RUN npm install
 
 COPY . .
-RUN npm build
+RUN npm run-script build
 
 EXPOSE 3000
 
