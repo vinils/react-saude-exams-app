@@ -37,7 +37,7 @@
   },
   "devDependencies": {
     "gh-pages": "^2.0.0",
-    "release-it": "^12.4.3"
+    "release-it": "^15.6.0"
   },
   "release-it": {
     "github": {
